@@ -1,10 +1,10 @@
 package Game.soldiers;
 
 import Game.coordinate.Coordinates;
+import Game.specialPower.SpecialPower2;
 import Game.weapon.Weapon;
 
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Created by СЕВАК on 29.03.2017.
@@ -12,14 +12,16 @@ import java.util.Scanner;
 public abstract class Soldier {
     protected static final String[] NAME = {"Jone", "Ianus", "Samuel", "Glaukos", "George", "Electra", "Kevin", "Morpius", "Nemo", "Cadmus", "David", "Damon"};
 
-    protected int health;
-    protected int strength;
+    protected double health;
+    protected double strength;
     protected int speed;
     protected String race;
     protected String type;
     protected String name;
     protected Weapon weapon;
     protected Coordinates coordinates;
+    protected SpecialPower2 specialPower2;
+    private boolean haveSpecialPower1 = false;
 
 //    Constructor
     public Soldier(int x, int y) {
@@ -29,6 +31,7 @@ public abstract class Soldier {
     }
 
     protected abstract void createWeapon();
+    public abstract boolean haveSpecialPower2();
 
 //    Draw
     public void draw() {
@@ -57,7 +60,7 @@ public abstract class Soldier {
         return name;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
@@ -65,12 +68,36 @@ public abstract class Soldier {
         return coordinates.getX();
     }
 
-//    setters
-    public void setDamage(int damage) {
+    public double getStrength() {
+        return strength;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    //    setters
+    public void setDamage(double damage) {
         health -= damage;
     }
 
-//    Move
+//    Special Power 1
+    public void specialPower1() {
+        strength *= 12/10;
+        haveSpecialPower1 = true;
+    }
+
+//    Special Power 2
+    public void setSpecialPower2(Soldier soldier) {
+        specialPower2 = new SpecialPower2(soldier);
+    }
+    public void takeWeapon() {
+        if(haveSpecialPower1) {
+            strength -= (float)1.2*weapon.getDamage();
+        } else strength -= weapon.getDamage();
+    }
+
+    //    Move
     public void move() {
         coordinates.move(speed, race);
     }
@@ -89,5 +116,15 @@ public abstract class Soldier {
         soldier.draw();
         System.out.println(". Damage: " + strength);
         soldier.setDamage(strength);
+        if(haveSpecialPower2() && (specialPower2.getSoldier().getWeapon() != null) && specialPower2.isEnemyWeek()) {
+            draw();
+            System.out.print(" took ");
+            soldier.getWeapon().draw();
+            System.out.print(" from ");
+            soldier.draw();
+            System.out.println();
+
+            specialPower2.getSoldier().weapon = null;
+        }
     }
 }

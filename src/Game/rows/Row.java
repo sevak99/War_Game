@@ -32,6 +32,8 @@ public class Row {
     private Human human;
     private Mystic mystic;
     private boolean battleIsFinished = false;
+    private boolean humanHaveSpecialPower = false;
+    private boolean mysticHaveSpecialPower = false;
 
 //    Constructor
     public Row(int currentRow) {
@@ -49,6 +51,8 @@ public class Row {
         human.firstPrint();
         createMystic();
         mystic.firstPrint();
+        special(human, mystic);
+        special(mystic, human);
     }
 
 //    Create Human
@@ -98,38 +102,57 @@ public class Row {
 
                 human.move();
                 if(human.getX() >= mystic.getX()) {
-                    attack(human, mystic);
-                    attack(mystic, human);
+                    specialPower1(mystic.getX());
+                    human.attack(mystic);
+                    if(SoldierIsKilled(mystic)) {
+                        drawKill(human, mystic);
+                    }
+                    else {
+                        mystic.attack(human);
+                        if(SoldierIsKilled(human)) {
+                            drawKill(mystic, human);
+                        }
+                    }
                     return;
                 } else human.drawMove();
 
                 mystic.move();
                 if(mystic.getX() <= human.getX()) {
-                    attack(mystic, human);
+                    specialPower1(human.getX());
+                    mystic.attack(human);
+                    if(SoldierIsKilled(human)) {
+                        drawKill(mystic, human);
+                    }
                 }
                 else mystic.drawMove();
             }
             else {
-                attack(human, mystic);
-                attack(mystic, human);
+                human.attack(mystic);
+                if(SoldierIsKilled(mystic)) {
+                    drawKill(human, mystic);
+                }
+                else {
+                    mystic.attack(human);
+                    if(SoldierIsKilled(human)) {
+                        drawKill(mystic, human);
+                    }
+                }
             }
         }
     }
 
-    private void attack(Soldier soldier1, Soldier soldier2) {
-        soldier1.attack(soldier2);
-        if(SoldierIsKilled(soldier2)) {
-            soldier1.draw();
-            System.out.print(" killed ");
-            soldier2.draw();
-            if(soldier2 instanceof Human) {
-                diedHumans++;
-                System.out.println("\nKilled Humans --------------------------- " + getDiedHumans());
-            }
-            if(soldier2 instanceof Mystic) {
-                diedMystics++;
-                System.out.println("\nKilled Mystics --------------------------- " + getDiedMystics());
-            }
+//    Draw Kill
+    private void drawKill(Soldier soldier1, Soldier soldier2) {
+        soldier1.draw();
+        System.out.print(" killed ");
+        soldier2.draw();
+        if(soldier2 instanceof Human) {
+            diedHumans++;
+            System.out.println("\nKilled Humans --------------------------- " + getDiedHumans());
+        }
+        if(soldier2 instanceof Mystic) {
+            diedMystics++;
+            System.out.println("\nKilled Mystics --------------------------- " + getDiedMystics());
         }
     }
 
@@ -148,6 +171,25 @@ public class Row {
     }
     public static int getDiedMystics() {
         return diedMystics;
+    }
+
+//    Special
+    private void special(Soldier soldier1, Soldier soldier2) {
+        if(soldier1.haveSpecialPower2()) {
+            soldier1.setSpecialPower2(soldier2);
+        }
+    }
+
+//    Special Power 1
+    private void specialPower1(int x) {
+        if(2*x < column) {
+            human.specialPower1();
+            System.out.println("In place of human:");
+        }
+        if(2*x > column) {
+            mystic.specialPower1();
+            System.out.println("In place of mystic");
+        }
     }
 
 }

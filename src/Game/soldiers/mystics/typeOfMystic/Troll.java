@@ -11,11 +11,17 @@ public class Troll extends Mystic {
     private static final int STRENGTH = 30 ;
     private static final int SPEED = 2 ;
 
+
     public Troll(int x, int y) {
         super(x, y);
         type = TYPE;
         health = HEALTH;
         strength = STRENGTH + weapon.getDamage();
         speed = SPEED;
+    }
+
+    @Override
+    public boolean haveSpecialPower2() {
+        return true;
     }
 }

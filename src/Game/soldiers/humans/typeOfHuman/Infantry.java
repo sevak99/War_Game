@@ -18,4 +18,9 @@ public class Infantry extends Human {
         strength = STRENGTH + weapon.getDamage();
         speed = SPEED;
     }
+
+    @Override
+    public boolean haveSpecialPower2() {
+        return false;
+    }
 }

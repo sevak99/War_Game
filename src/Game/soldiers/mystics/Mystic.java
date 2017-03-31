@@ -17,12 +17,14 @@ public abstract class Mystic extends Soldier {
     private static final int numberOfKnife = 2;
     private static final int numberOfSword = 3;
 
+//    Constructor
     public Mystic(int x, int y) {
         super(x, y);
         createWeapon();
         race = RACE;
     }
 
+//    Create Weapon
     @Override
     protected void createWeapon() {
         Random random = new Random();
